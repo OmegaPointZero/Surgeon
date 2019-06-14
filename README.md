@@ -1,11 +1,11 @@
-# Caveman
+# Surgeon
 An ELF/PE binary file backdooring toolkit, that finds codecaves, injects shellcode and modifies section permissions.
 
 # Usage
 
-`python caveman.py` will prompt the user for the absolute path to the binary being analyzed. The default behavior is to set the -A, -d and -s flags on the binary.
+`python surgeon.py` will prompt the user for the absolute path to the binary being analyzed. The default behavior is to set the -A, -d and -s flags on the binary.
 
-To tell Caveman that you're looking to enumerate code cave information from the binary, or only want specific information about it, these are the following flags:
+To tell Surgeon that you're looking to enumerate code cave information from the binary, or only want specific information about it, these are the following flags:
 
 `  -f, --file FILE_PATH  Location of file to search for code cave in (absolute
                         path)`
@@ -26,7 +26,7 @@ To tell Caveman that you're looking to enumerate code cave information from the 
   `-b, --byte BYTE       Byte to be searching for.`
   
 
-  To tell Caveman to inject shellcode, the following options need to be used. BE CAREFUL! This will overwrite WHATEVER OFFSET YOU TELL IT TO.
+  To tell Surgeon to inject shellcode, the following options need to be used. BE CAREFUL! This will overwrite WHATEVER OFFSET YOU TELL IT TO.
 
 
 `  -t, --target-offset TARGET
