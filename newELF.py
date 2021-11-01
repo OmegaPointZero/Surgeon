@@ -45,7 +45,6 @@ class ELF:
         header = self.file_object.read(64)
         self.magic_bytes = header[0:4]
 
-        print(hex(header[4]))
         if hex(header[4])=="0x1":
             self.arch_bits = "32-bit"
         elif hex(header[4])=="0x2":
@@ -125,20 +124,20 @@ class ELF:
             self.e_ehsize = bsr(52,54)
             self.e_phentsize = bsr(54,56)
             self.e_phnum = bsr(56,58)
-            e_shentsize = bsr(58,60)
-            e_shnum = bsr(60,62)
-            e_shstrndx = bsr(62,64)
+            self.e_shentsize = bsr(58,60)
+            self.e_shnum = bsr(60,62)
+            self.e_shstrndx = bsr(62,64)
         elif self.arch_bits == "32-bit":
             self.entry_point = bsr(24,28)
             self.program_header_table = bsr(28,32)
             self.section_header_table = bsr(32,36)
-            e_flags = bsr(36,40)
-            e_ehsize = bsr(40,42)
-            e_phentsize = bsr(42,44)
-            e_phnum = bsr(44,46)
-            e_shentsize = bsr(46,48)
-            e_shnum = bsr(48,50)
-            e_shstrndx = bsr(50,52)
+            self.e_flags = bsr(36,40)
+            self.e_ehsize = bsr(40,42)
+            self.e_phentsize = bsr(42,44)
+            self.e_phnum = bsr(44,46)
+            self.e_shentsize = bsr(46,48)
+            self.e_shnum = bsr(48,50)
+            self.e_shstrndx = bsr(50,52)
 
         obj = {
             'format': 'ELF',
