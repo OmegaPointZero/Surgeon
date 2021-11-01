@@ -47,24 +47,13 @@ class Surgeon:
     f = bytes(self.file_object.read(4))
     if f == b'\x7FELF':
       self.file_type = 'ELF'
+      self.fileOperator = ELF(self.file_object)
     elif f[0:2] == b"\x4d\x5a":
       self.file_type = "PE"
+      '''
+      self.fileOperator = PE()
+      '''
     return self.file_type
-
-  def parseExecHeader(self):
-    if self.file_type == '':
-      print("[ERROR]: No type set/acknowledged")
-    else:
-      if self.file_type == 'ELF':
-        self.fileOperator = ELF(self.file_object)
-      """
-      elif self.file_type == 'PE':
-        self.fileOperator = PE()
-      """
-    if(self.show_headers_flag == True):
-      self.fileOperator.parseFileHeader()
-      self.fileOperator.print_file_headers()
-      
 
 
 if __name__ == '__main__':
@@ -95,17 +84,20 @@ if __name__ == '__main__':
   '''
   results = parser.parse_args()
 
-
+  # First, make sure we have a target file to operate on 
   if results.file_path == '':
       path = input("Input path to the file to look for code caves in\n> ")
   else: 
     path = results.file_path 
+
+  # Instantiate our Surgeon and give it the file
   S = Surgeon()
   S.target_file = path
+  # Get the file type from the target file
   fileType = S.getFileType(S.target_file)
-  S.parseExecHeader()
-  
-
-
+  # Parse the file Headers
+  S.fileOperator.parseFileHeader()
+  if(S.show_headers_flag == True):
+    S.fileOperator.print_file_headers()
 
 
