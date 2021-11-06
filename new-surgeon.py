@@ -34,6 +34,7 @@ class Surgeon:
     self.file_object = None
     self.show_headers_flag = True
     self.fileOperator = None
+    self.sh = True
   
   def setTargetFile(self, filename):
     self.target_file = filename
@@ -60,16 +61,17 @@ if __name__ == '__main__':
 
   args = sys.argv
   parser = argparse.ArgumentParser(description='Parse and modify executables, find codecaves, and create backdoors')
-  # File we're working with
 
+  # File we're working with, should be defined if calling from command line
   parser.add_argument('-f, --file', action='store', default="", dest='file_path', help='Location of file to search for code cave in (absolute path)')
-  '''
-  # Options for if we're searching for code caves
+
+  # Other Options 
   parser.add_argument('-d, --file-headers', action='store_true', dest='fh', help='Show File Headers')
   parser.add_argument('-s, --section-headers', action='store_true', dest='sh', help='Show enumerated section headers')
-  parser.add_argument('-S, --search', action='store', dest='search', help='Section to search for code cave inside of')
-  parser.add_argument('-X', action='store_true', dest='allEx', help='Search all executable sections')
-  parser.add_argument('-A', action='store_true', dest='allSec', help='Search all sections')
+  parser.add_argument('-S, --search', action='store', dest='search_specific', help='Section to search for code cave inside of')
+  parser.add_argument('-X', action='store_true', dest='search_exec', help='Search all executable sections')
+  parser.add_argument('-A', action='store_true', dest='search_all', help='Search all sections')
+  '''
   parser.add_argument('-l, --length', action='store', default='64', dest='length', help='Number of bytes that constitutes a cave (default 64)')
   parser.add_argument('-b, --byte', action='store', default='0x00', dest='byte', help='Byte to be searching for.')
 
@@ -95,9 +97,58 @@ if __name__ == '__main__':
   S.target_file = path
   # Get the file type from the target file
   fileType = S.getFileType(S.target_file)
-  # Parse the file Headers
+  # Parse the file Headers and display them
   S.fileOperator.parseFileHeader()
   if(S.show_headers_flag == True):
     S.fileOperator.print_file_headers()
+  sections = S.fileOperator.parseSectionHeaderTable(S.sh)
+  print(sections)
 
+  # Crawling for code caves 
+  CONDITIONS_STATEMENT = results.search_all or (((int(section['sh_flags']) & 0b100) and results.search_exec)) # or (results.search_specific and section['name'] == results.search_specific)) 
+
+    #if ftype == "ELF":
+    #   sections = elfs(path, EH['sht'], EH['arch'], EH['endian'], EH['e_shnum'], EH['e_shentsize'], EH['e_shstrndx'], sh)
+    # sA = allSec
+    # sAX = allEx(ecutable) 
+    # se = results.search
+
+    # FOR EACH SECTION:
+    # Crawl the section if section is in CONDITIONS
+    # 
+    # CONDITIONS_STATEMENT = sA or (((int(sec['sh_flags']) & 0b100) and sAX) or (se and sec['name'] == se) 
+    # 
+    # for section in sections:
+    #     if(CONDITIONS_STATEMENT):
+    #         c = crawlSection....
+    # 
+
+
+
+  """
+  parser.add_argument('-X', action='store_true', dest='allEx', help='Search all executable sections')
+  parser.add_argument('-A', action='store_true', dest='allSec', help='Search all sections')
+  parser.add_argument('-S, --search', action='store', dest='search', help='Section to search for code cave inside of')  
+  """
+
+
+  """
+  for sec in sections:
+      if sA:
+          c = crawlSection(int(sec['sh_offset'],16), int(sec['sh_size'],16), sec['parsed_flags'], sec['name'], path, caveLen,enumerating)
+          if c:
+              for e in c:
+                  crawled.append(e)
+      elif (int(sec['sh_flags']) & 0b100) and sAX == True:
+          c = crawlSection(int(sec['sh_offset'],16), int(sec['sh_size'],16), sec['parsed_flags'], sec['name'], path, caveLen,enumerating)
+          if c:
+              for e in c:
+                  crawled.append(e)            
+      elif se and sec['name'] == se:
+          c = crawlSection(int(sec['sh_offset'],16), int(sec['sh_size'],16), sec['parsed_flags'], sec['name'], path, caveLen,enumerating)
+          if c:
+              for e in c:
+                  crawled.append(e)
+  """
+  
 
